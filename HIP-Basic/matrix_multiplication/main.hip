@@ -115,6 +115,8 @@ void configure_parser(cli::Parser& parser)
     constexpr unsigned int a_rows = 2048;
     constexpr unsigned int a_cols = 1024;
     constexpr unsigned int b_cols = 1024;
+    constexpr float a_value = 1.F;
+    constexpr float b_value = 0.02F;
 
     static_assert(
         ((a_rows % BlockSize == 0) && (a_cols % BlockSize == 0) && (b_cols % BlockSize == 0)),
@@ -132,6 +134,14 @@ void configure_parser(cli::Parser& parser)
                                       "B_cols",
                                       b_cols,
                                       "Number of columns in Matrix B"); // Default 1024
+    parser.set_optional<float>("A_value",
+                                      "A_value",
+                                      a_value,
+                                      "Value of Matrix A"); // Default 1.F
+    parser.set_optional<float>("B_value",
+                                      "B_value",
+                                      b_value,
+                                      "Value of Matrix B"); // Default 0.02F
 }
 
 int main(int argc, const char* argv[])
@@ -147,6 +157,8 @@ int main(int argc, const char* argv[])
     const unsigned int a_rows = parser.get<unsigned int>("A_rows");
     const unsigned int a_cols = parser.get<unsigned int>("A_cols");
     const unsigned int b_cols = parser.get<unsigned int>("B_cols");
+    const float a_value = parser.get<float>("A_value");
+    const float b_value = parser.get<float>("B_value");
 
     if((a_rows % block_size != 0) || (a_cols % block_size != 0) || (b_cols % block_size != 0))
     {
@@ -166,9 +178,7 @@ int main(int argc, const char* argv[])
     std::vector<float> C(c_cols * c_rows);
 
     // Set matrix elements to a constant on the host.
-    std::fill(A.begin(), A.end(), 1.F);
-
-    constexpr float b_value = 0.02F;
+    std::fill(A.begin(), A.end(), a_value);
     std::fill(B.begin(), B.end(), b_value);
 
     const size_t a_bytes = sizeof(float) * A.size();
