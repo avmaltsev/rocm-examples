@@ -244,13 +244,13 @@ int main(int argc, const char* argv[])
     HIP_CHECK(hipFree(d_B));
     HIP_CHECK(hipFree(d_C));
 
-    std::cout << "DEBUG " << a_cols << " " << a_value << " " << b_value << " " << C[0] << " " << std::endl;
     // Check if the resulting elements match the expectation.
     constexpr float tolerance         = 0.001F;
+    std::cout << "DEBUG " << a_cols << " " << a_value << " " << b_value << " " << C[0] << " " tolerance > std::abs(C[0] - a_value * b_value) << std::endl;
     const bool      validation_passed = std::all_of(
         C.begin(),
         C.end(),
-        [=](const float value) { return tolerance > std::abs(value - a_cols * b_value); });
+        [=](const float value) { return tolerance > std::abs(value - a_value * b_value); });
     if(validation_passed)
     {
         std::cout << "Validation passed." << std::endl;
