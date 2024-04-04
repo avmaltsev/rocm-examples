@@ -173,6 +173,8 @@ int main(int argc, const char* argv[])
     const unsigned int c_cols = b_cols;
     const unsigned int c_rows = a_rows;
 
+    const float TFLOP = 2.0 * A_rows * A_cols * B_cols / 1000 / 1000 / 1000;
+
     std::vector<float> A(a_cols * a_rows);
     std::vector<float> B(b_cols * b_rows);
     std::vector<float> C(c_cols * c_rows);
@@ -184,6 +186,10 @@ int main(int argc, const char* argv[])
     const size_t a_bytes = sizeof(float) * A.size();
     const size_t b_bytes = sizeof(float) * B.size();
     const size_t c_bytes = sizeof(float) * C.size();
+    std::cout << "A Matrix size = " << 1.0F * a_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "B Matrix size = " << 1.0F * b_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "C Matrix size = " << 1.0F * c_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+
     float*       d_A{};
     float*       d_B{};
     float*       d_C{};
@@ -191,8 +197,21 @@ int main(int argc, const char* argv[])
     HIP_CHECK(hipMalloc(&d_B, b_bytes));
     HIP_CHECK(hipMalloc(&d_C, c_bytes));
 
+    // HIP events has to be initialized using hipEventCreate.
+    hipEvent_t start, stop;
+    HIP_CHECK(hipEventCreate(&start));
+    HIP_CHECK(hipEventCreate(&stop));
+
+    HIP_CHECK(hipEventRecord(start, hipStreamDefault));
+
     HIP_CHECK(hipMemcpy(d_A, A.data(), a_bytes, hipMemcpyHostToDevice));
     HIP_CHECK(hipMemcpy(d_B, B.data(), b_bytes, hipMemcpyHostToDevice));
+
+    HIP_CHECK(hipEventRecord(stop, hipStreamDefault));
+    HIP_CHECK(hipEventSynchronize(stop));
+    float elapsed_ms{};
+    HIP_CHECK(hipEventElapsedTime(&elapsed_ms, start, stop));
+    std::cout << "hipMemcpyHostToDevice time = " << elapsed_ms << " ms, transfer rate = " << 1.0F * (a_bytes+b_bytes) / 1000 / 1000 / elapsed_ms << "TB/sec" << std::endl;
 
     const dim3 block_dim(block_size, block_size);
     const dim3 grid_dim(c_cols / block_size, c_rows / block_size);
@@ -200,10 +219,16 @@ int main(int argc, const char* argv[])
     // Launch matrix multiplication kernel.
     std::cout << "Matrix multiplication: [" << a_rows << 'x' << a_cols << "] * [" << b_rows << 'x'
               << b_cols << "], block size: " << block_size << 'x' << block_size << std::endl;
+
+    HIP_CHECK(hipEventRecord(start, hipStreamDefault));
     matrix_multiplication_kernel<block_size>
         <<<grid_dim, block_dim, 0, hipStreamDefault>>>(d_A, d_B, d_C, a_cols);
     // Check if the kernel launch was successful.
     HIP_CHECK(hipGetLastError());
+    HIP_CHECK(hipEventRecord(stop, hipStreamDefault));
+    HIP_CHECK(hipEventSynchronize(stop));
+    HIP_CHECK(hipEventElapsedTime(&elapsed_ms, start, stop));
+    std::cout << "matrix_multiplication_kernel time = " << elapsed_ms << " ms, perfomance = " << 1.0F * TFLOP / (1000 * elapsed_ms) << "TFlops" << std::endl;
 
     // Copy the resulting matrix to the host. This call synchronizes with the host.
     HIP_CHECK(hipMemcpy(C.data(), d_C, c_bytes, hipMemcpyDeviceToHost));
