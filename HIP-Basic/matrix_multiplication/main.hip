@@ -159,11 +159,11 @@ int main(int argc, const char* argv[])
     const unsigned int b_cols = parser.get<unsigned int>("B_cols");
     const float a_value = parser.get<float>("A_value");
     const float b_value = parser.get<float>("B_value");
-    std::cout << "Parser::A_rows"  << a_rows << std::endl;
-    std::cout << "Parser::A_cols"  << a_cols << std::endl;
-    std::cout << "Parser::B_cols"  << b_cols << std::endl;
-    std::cout << "Parser::A_value"  << a_value << std::endl;
-    std::cout << "Parser::B_value"  << b_value << std::endl;
+    std::cout << "Parser::A_rows "  << a_rows << std::endl;
+    std::cout << "Parser::A_cols "  << a_cols << std::endl;
+    std::cout << "Parser::B_cols "  << b_cols << std::endl;
+    std::cout << "Parser::A_value "  << a_value << std::endl;
+    std::cout << "Parser::B_value "  << b_value << std::endl;
 
     if((a_rows % block_size != 0) || (a_cols % block_size != 0) || (b_cols % block_size != 0))
     {
@@ -180,7 +180,9 @@ int main(int argc, const char* argv[])
 
     const float TFLOP = 2.0 * a_rows * a_cols * a_cols / 1000 / 1000 / 1000;
 
+    std::cout << "DEBUG " << a_cols << " " << a_rows << " " << a_cols * a_rows << std::endl;
     std::vector<float> A(a_cols * a_rows);
+    std::cout << "DEBUG " << A.size() << std::endl;
     std::vector<float> B(b_cols * b_rows);
     std::vector<float> C(c_cols * c_rows);
 
