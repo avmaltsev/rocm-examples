@@ -217,7 +217,7 @@ int main(int argc, const char* argv[])
     const bool      validation_passed = std::all_of(
         C.begin(),
         C.end(),
-        [=](const float value) { return tolerance > std::abs(value - a_cols * b_value); });
+        [=](const float value) { return tolerance > std::abs(value - a_value * b_value); });
     if(validation_passed)
     {
         std::cout << "Validation passed." << std::endl;
