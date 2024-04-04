@@ -173,7 +173,7 @@ int main(int argc, const char* argv[])
     const unsigned int c_cols = b_cols;
     const unsigned int c_rows = a_rows;
 
-    const float TFLOP = 2.0 * A_rows * A_cols * B_cols / 1000 / 1000 / 1000;
+    const float TFLOP = 2.0 * a_rows * a_cols * a_cols / 1000 / 1000 / 1000;
 
     std::vector<float> A(a_cols * a_rows);
     std::vector<float> B(b_cols * b_rows);
