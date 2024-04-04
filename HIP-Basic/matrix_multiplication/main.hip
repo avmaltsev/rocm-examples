@@ -246,7 +246,7 @@ int main(int argc, const char* argv[])
 
     // Check if the resulting elements match the expectation.
     constexpr float tolerance         = 0.001F;
-    std::cout << "DEBUG " << a_cols << " " << a_value << " " << b_value << " " << C[0] << " " tolerance > std::abs(C[0] - a_value * b_value) << std::endl;
+    std::cout << "DEBUG " << a_cols << " " << a_value << " " << b_value << " " << C[0] << " " << tolerance > std::abs(C[0] - a_value * b_value) << std::endl;
     const bool      validation_passed = std::all_of(
         C.begin(),
         C.end(),
