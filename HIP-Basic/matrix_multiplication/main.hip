@@ -186,9 +186,9 @@ int main(int argc, const char* argv[])
     const size_t a_bytes = sizeof(float) * A.size();
     const size_t b_bytes = sizeof(float) * B.size();
     const size_t c_bytes = sizeof(float) * C.size();
-    std::cout << "A Matrix size = " << 1.0F * a_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
-    std::cout << "B Matrix size = " << 1.0F * b_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
-    std::cout << "C Matrix size = " << 1.0F * c_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "A Matrix size = " << a_bytes << "bytes, " << 1.0F * a_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "B Matrix size = " << b_bytes << "bytes, " << 1.0F * b_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "C Matrix size = " << c_bytes << "bytes, " << 1.0F * c_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
 
     float*       d_A{};
     float*       d_B{};
@@ -211,7 +211,7 @@ int main(int argc, const char* argv[])
     HIP_CHECK(hipEventSynchronize(stop));
     float elapsed_ms{};
     HIP_CHECK(hipEventElapsedTime(&elapsed_ms, start, stop));
-    std::cout << "hipMemcpyHostToDevice time = " << elapsed_ms << " ms, transfer rate = " << 1.0F * (a_bytes+b_bytes) / 1000 / 1000 / elapsed_ms << "TB/sec" << std::endl;
+    std::cout << "hipMemcpyHostToDevice time = " << elapsed_ms << " ms, transfer rate = " << 1.0F * (a_bytes+b_bytes) / 1000 / 1000 / elapsed_ms << " TB/sec" << std::endl;
 
     const dim3 block_dim(block_size, block_size);
     const dim3 grid_dim(c_cols / block_size, c_rows / block_size);
