@@ -159,6 +159,11 @@ int main(int argc, const char* argv[])
     const unsigned int b_cols = parser.get<unsigned int>("B_cols");
     const float a_value = parser.get<float>("A_value");
     const float b_value = parser.get<float>("B_value");
+    std::cout << "Parser::A_rows"  << a_rows << std::endl;
+    std::cout << "Parser::A_cols"  << a_cols << std::endl;
+    std::cout << "Parser::B_cols"  << b_cols << std::endl;
+    std::cout << "Parser::A_value"  << a_value << std::endl;
+    std::cout << "Parser::B_value"  << b_value << std::endl;
 
     if((a_rows % block_size != 0) || (a_cols % block_size != 0) || (b_cols % block_size != 0))
     {
@@ -186,9 +191,9 @@ int main(int argc, const char* argv[])
     const size_t a_bytes = sizeof(float) * A.size();
     const size_t b_bytes = sizeof(float) * B.size();
     const size_t c_bytes = sizeof(float) * C.size();
-    std::cout << "A Matrix size = " << a_bytes << "bytes, " << 1.0F * a_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
-    std::cout << "B Matrix size = " << b_bytes << "bytes, " << 1.0F * b_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
-    std::cout << "C Matrix size = " << c_bytes << "bytes, " << 1.0F * c_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "A Matrix size = " << a_bytes << " bytes, " << 1.0F * a_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "B Matrix size = " << b_bytes << " bytes, " << 1.0F * b_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
+    std::cout << "C Matrix size = " << c_bytes << " bytes, " << 1.0F * c_bytes / 1000 / 1000 / 1000  << " TB" << std::endl;
 
     float*       d_A{};
     float*       d_B{};
